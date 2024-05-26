@@ -7,7 +7,7 @@ const toPascalCase = (str: string): string => {
         .replace(/(^\w|-\w)/g, (match) => match.toUpperCase().replace("-", ""));
 };
 
-export default function serverless(app: any) {
+function serverless(app: any) {
     return async (event: any) => {
         const handler = toPlainHandler(app);
         const response = await handler({
@@ -30,7 +30,9 @@ export default function serverless(app: any) {
             statusCode: response.status,
             headers: headersObject,
             body: response.body,
-
         };
     };
 }
+
+export default serverless;
+module.exports = serverless; // Use CommonJS export

@@ -1,11 +1,11 @@
 {
   "name": "serverless-h3",
-  "version": "1.0.3",
+  "version": "1.0.9",
   "description": "A serverless wrapper for h3 applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --strict ",
     "prepublishOnly": "npm run build"
   },
   "author": "Ralph Crisostomo",
@@ -22,5 +22,18 @@
     "type": "git",
     "url": "https://github.com/ralphcrisostomo/serverless-h3.git"
   },
-  "homepage": "https://github.com/ralphcrisostomo/serverless-h3#readme"
+  "homepage": "https://github.com/ralphcrisostomo/serverless-h3#readme",
+  "keywords": [
+    "serverless",
+    "h3",
+    "aws-lambda",
+    "serverless-framework",
+    "lambda",
+    "wrapper",
+    "http",
+    "nodejs",
+    "typescript",
+    "api",
+    "microservice"
+  ]
 }
