@@ -29,14 +29,15 @@ To use `serverless-h3` with AWS Lambda, follow these steps:
 
 Here's an example of how to set up your handler for AWS Lambda:
 
+javascript:
 ```javascript
 // handler.js
-const { createApp, defineEventHandler, readBody } = require('h3');
 const serverless = require('serverless-h3');
+const { createApp, defineEventHandler, readBody } = require('h3');
 
 const app = createApp();
 
-app.use('/hello', defineEventHandler((event) => {
+app.use(defineEventHandler((event) => {
     // You can use your h3 methods here..
     const body = readBody(event);
     return {
@@ -45,7 +46,27 @@ app.use('/hello', defineEventHandler((event) => {
     }
 }));
 
-export const handler = serverless(app);
+export const hello = serverless(app);
+```
+
+typescript:
+```javascript
+// handler.ts
+import serverless from 'serverless-h3';
+import { createApp, defineEventHandler, readBody } from 'h3';
+
+const app = createApp();
+
+app.use(defineEventHandler((event) => {
+    // You can use your h3 methods here..
+    const body = readBody(event);
+    return {
+        hello: 'world',
+        body: body
+    }
+}));
+
+module.exports.hello = serverless(app);
 ```
 
 ### Contributing
