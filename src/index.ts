@@ -1,10 +1,10 @@
-// index.ts
+// src/index.ts
 import { toPlainHandler } from "h3";
 
 const toPascalCase = (str: string): string => {
     return str
         .toLowerCase()
-        .replace(/(^\w|-\w)/g, (match) => match.toUpperCase().replace('-', ''));
+        .replace(/(^\w|-\w)/g, (match) => match.toUpperCase().replace("-", ""));
 };
 
 export default function serverless(app: any) {
@@ -12,7 +12,7 @@ export default function serverless(app: any) {
         const handler = toPlainHandler(app);
         const response = await handler({
             ...event,
-            method: event.httpMethod
+            method: event.httpMethod,
         });
 
         const headersArray = response.headers;
@@ -29,7 +29,8 @@ export default function serverless(app: any) {
         return {
             statusCode: response.status,
             headers: headersObject,
-            body: response.body
+            body: response.body,
+
         };
     };
 }
