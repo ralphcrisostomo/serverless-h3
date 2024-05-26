@@ -1,6 +1,6 @@
 {
   "name": "serverless-h3",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A serverless wrapper for h3 applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
