@@ -11,23 +11,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 // src/index.ts
 const h3_1 = require("h3");
-const toPascalCase = (str) => {
-    return str
-        .toLowerCase()
-        .replace(/(^\w|-\w)/g, (match) => match.toUpperCase().replace("-", ""));
-};
 function serverless(app) {
     return (event) => __awaiter(this, void 0, void 0, function* () {
         const handler = (0, h3_1.toPlainHandler)(app);
         const response = yield handler(Object.assign(Object.assign({}, event), { method: event.httpMethod }));
         const headersArray = response.headers;
         const headersObject = headersArray.reduce((acc, [key, value]) => {
-            const pascalKey = toPascalCase(key);
-            if (acc[pascalKey]) {
-                acc[pascalKey] += `, ${value}`;
+            const headerKey = key;
+            if (acc[headerKey]) {
+                acc[headerKey] += `, ${value}`;
             }
             else {
-                acc[pascalKey] = value;
+                acc[headerKey] = value;
             }
             return acc;
         }, {});

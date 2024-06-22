@@ -1,12 +1,6 @@
 // src/index.ts
 import { toPlainHandler } from "h3";
 
-const toPascalCase = (str: string): string => {
-    return str
-        .toLowerCase()
-        .replace(/(^\w|-\w)/g, (match) => match.toUpperCase().replace("-", ""));
-};
-
 function serverless(app: any) {
     return async (event: any) => {
         const handler = toPlainHandler(app);
@@ -17,11 +11,11 @@ function serverless(app: any) {
 
         const headersArray = response.headers;
         const headersObject = headersArray.reduce((acc: any, [key, value]: [string, string]) => {
-            const pascalKey = toPascalCase(key);
-            if (acc[pascalKey]) {
-                acc[pascalKey] += `, ${value}`;
+            const headerKey = key;
+            if (acc[headerKey]) {
+                acc[headerKey] += `, ${value}`;
             } else {
-                acc[pascalKey] = value;
+                acc[headerKey] = value;
             }
             return acc;
         }, {});
@@ -33,6 +27,7 @@ function serverless(app: any) {
         };
     };
 }
+
 
 export default serverless;
 module.exports = serverless; // Use CommonJS export
