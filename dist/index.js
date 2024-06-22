@@ -16,16 +16,27 @@ function serverless(app) {
         const handler = (0, h3_1.toPlainHandler)(app);
         const response = yield handler(Object.assign(Object.assign({}, event), { method: event.httpMethod }));
         const headersArray = response.headers;
-        const headersObject = headersArray.reduce((acc, [key, value]) => {
-            const headerKey = key;
-            if (acc[headerKey]) {
-                acc[headerKey] += `, ${value}`;
+        const headersObject = {};
+        headersArray.forEach(([key, value]) => {
+            if (key.toLowerCase() === 'set-cookie') {
+                if (!headersObject['Set-Cookie']) {
+                    headersObject['Set-Cookie'] = [];
+                }
+                headersObject['Set-Cookie'].push(value);
             }
             else {
-                acc[headerKey] = value;
+                if (headersObject[key]) {
+                    headersObject[key] += `, ${value}`;
+                }
+                else {
+                    headersObject[key] = value;
+                }
             }
-            return acc;
-        }, {});
+        });
+        // Ensure Set-Cookie headers are joined correctly
+        if (headersObject['Set-Cookie']) {
+            headersObject['Set-Cookie'] = headersObject['Set-Cookie'].map((cookie) => cookie);
+        }
         return {
             statusCode: response.status,
             headers: headersObject,

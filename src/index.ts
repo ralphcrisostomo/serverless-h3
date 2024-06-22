@@ -10,15 +10,31 @@ function serverless(app: any) {
         });
 
         const headersArray = response.headers;
-        const headersObject = headersArray.reduce((acc: any, [key, value]: [string, string]) => {
-            const headerKey = key;
-            if (acc[headerKey]) {
-                acc[headerKey] += `, ${value}`;
+        const headersObject: any = {};
+
+        headersArray.forEach(([key, value]: [string, string]) => {
+            if (key.toLowerCase() === 'set-cookie') {
+                if (!headersObject['Set-Cookie']) {
+                    headersObject['Set-Cookie'] = [];
+                }
+                headersObject['Set-Cookie'].push(value);
+                console.log('Set-Cookie header added:', value);
             } else {
-                acc[headerKey] = value;
+                if (headersObject[key]) {
+                    headersObject[key] += `, ${value}`;
+                } else {
+                    headersObject[key] = value;
+                }
+                console.log(`${key} header added/updated:`, headersObject[key]);
             }
-            return acc;
-        }, {});
+        });
+
+        // Ensure Set-Cookie headers are joined correctly
+        if (headersObject['Set-Cookie']) {
+            headersObject['Set-Cookie'] = headersObject['Set-Cookie'].map((cookie: string) => cookie);
+        }
+
+        console.log('Final headers object:', headersObject);
 
         return {
             statusCode: response.status,
@@ -27,7 +43,6 @@ function serverless(app: any) {
         };
     };
 }
-
 
 export default serverless;
 module.exports = serverless; // Use CommonJS export
