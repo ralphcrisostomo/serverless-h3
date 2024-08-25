@@ -1,8 +1,27 @@
 // src/index.ts
 import { toPlainHandler } from "h3";
 
+function buildUrlWithQueryParams(baseUrl: string, queryParams: Record<string, string | string[]>) {
+    const queryString = Object.entries(queryParams)
+        .map(([key, values]) => {
+            // Check if values is an array, otherwise treat it as a single value
+            if (Array.isArray(values)) {
+                return values.map(value => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
+            } else {
+                return `${encodeURIComponent(key)}=${encodeURIComponent(values)}`;
+            }
+        })
+        .join('&');
+
+    // Append the query string to the base URL
+    return queryString ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}${queryString}` : baseUrl;
+}
+
 function serverless(app: any) {
     return async (event: any) => {
+        if (event.multiValueQueryStringParameters) {
+            event.path = buildUrlWithQueryParams(event.path, event.multiValueQueryStringParameters)
+        }
         const handler = toPlainHandler(app);
         const response = await handler({
             ...event,
@@ -11,13 +30,14 @@ function serverless(app: any) {
 
         const headersArray = response.headers;
         const headersObject: any = {};
+        const multiValueHeadersObject: any = {};
 
         headersArray.forEach(([key, value]: [string, string]) => {
             if (key.toLowerCase() === 'set-cookie') {
-                if (!headersObject['Set-Cookie']) {
-                    headersObject['Set-Cookie'] = [];
+                if (!multiValueHeadersObject['Set-Cookie']) {
+                    multiValueHeadersObject['Set-Cookie'] = [];
                 }
-                headersObject['Set-Cookie'].push(value);
+                multiValueHeadersObject['Set-Cookie'].push(value);
                 console.log('Set-Cookie header added:', value);
             } else {
                 if (headersObject[key]) {
@@ -29,16 +49,13 @@ function serverless(app: any) {
             }
         });
 
-        // Ensure Set-Cookie headers are joined correctly
-        if (headersObject['Set-Cookie']) {
-            headersObject['Set-Cookie'] = headersObject['Set-Cookie'].map((cookie: string) => cookie);
-        }
-
         console.log('Final headers object:', headersObject);
+        console.log('Final multiValueHeaders object:', multiValueHeadersObject);
 
         return {
             statusCode: response.status,
             headers: headersObject,
+            multiValueHeaders: multiValueHeadersObject,
             body: response.body,
         };
     };
