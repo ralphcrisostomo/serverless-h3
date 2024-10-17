@@ -42,7 +42,7 @@ function serverless(app) {
                     multiValueHeadersObject['Set-Cookie'] = [];
                 }
                 multiValueHeadersObject['Set-Cookie'].push(value);
-                console.log('Set-Cookie header added:', value);
+                // console.log('Set-Cookie header added:', value);
             }
             else {
                 if (headersObject[key]) {
@@ -51,11 +51,12 @@ function serverless(app) {
                 else {
                     headersObject[key] = value;
                 }
-                console.log(`${key} header added/updated:`, headersObject[key]);
+                // console.log(`${key} header added/updated:`, headersObject[key]);
             }
         });
-        console.log('Final headers object:', headersObject);
-        console.log('Final multiValueHeaders object:', multiValueHeadersObject);
+        // console.log('Final headers object:', headersObject);
+        // console.log('Final multiValueHeaders object:', multiValueHeadersObject);
+        console.log(JSON.stringify({ response }));
         return {
             statusCode: response.status,
             headers: headersObject,

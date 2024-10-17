@@ -5,10 +5,14 @@
     "declaration": true,
     "outDir": "./dist",
     "strict": true,
-    "lib": ["ES6", "DOM", "DOM.Iterable", "ES2018"],
-    "typeRoots": ["./node_modules/@types"]
+    "lib": ["ES6", "DOM"],
+    "types": ["node"], // This tells TypeScript to include Node.js types
+    "skipLibCheck": true
   },
   "include": [
-    "src/index.ts", "shims.d.ts"],
-  "exclude": ["node_modules"]
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules", "dist"
+  ]
 }
