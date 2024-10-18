@@ -31,8 +31,10 @@ function serverless(app) {
         if (event.multiValueQueryStringParameters) {
             event.path = buildUrlWithQueryParams(event.path, event.multiValueQueryStringParameters);
         }
+        // Refs: H3 Response Schema
+        //  - https://h3.unjs.io/adapters/plain
         const handler = (0, h3_1.toPlainHandler)(app);
-        const response = yield handler(Object.assign(Object.assign({}, event), { method: event.httpMethod }));
+        const response = yield handler(Object.assign(Object.assign({}, event), { method: event.httpMethod, context: event.requestContext }));
         const headersArray = response.headers;
         const headersObject = {};
         const multiValueHeadersObject = {};
@@ -54,9 +56,8 @@ function serverless(app) {
                 // console.log(`${key} header added/updated:`, headersObject[key]);
             }
         });
-        // console.log('Final headers object:', headersObject);
-        // console.log('Final multiValueHeaders object:', multiValueHeadersObject);
-        console.log(JSON.stringify({ response }));
+        // Refs: Lambda Response Schema
+        //  - https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
         return {
             statusCode: response.status,
             headers: headersObject,
